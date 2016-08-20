@@ -54,4 +54,16 @@ class Mongoid::TrashableTest < Minitest::Test
     assert(FooModel.unscoped.count == 0)
     assert(Mongoid::Trash.count == 0)
   end
+
+  def test_restoring_a_piece_of_trash
+    foo = FooModel.create!(name: 'Foo')
+    foo.destroy
+    assert(FooModel.unscoped.count == 0)
+
+    trash = Mongoid::Trash.first
+    trash.restore
+
+    restored_foo = FooModel.find(foo.id)
+    assert(restored_foo == foo)
+  end
 end

@@ -10,5 +10,10 @@ module Mongoid
     def copy_trashable_document
       self.trashable_document = trashable.as_document
     end
+
+    def restore
+      new_instance = trashable_type.constantize.new(trashable_document)
+      new_instance.save
+    end
   end
 end
