@@ -10,13 +10,11 @@ module Mongoid
       before_destroy :trash
     end
 
-    # Creates a piece of trash and ignores callbacks
     def delete(*)
       trash # Ensure this is created
       super
     end
 
-    # Does not create a piece of trash and ignore callbacks
     def delete!
       without_trashing { delete }
     end
