@@ -12,8 +12,10 @@ module Mongoid
     end
 
     def restore
-      new_instance = trashable_type.constantize.new(trashable_document)
-      new_instance.save
+      restored = trashable_type.constantize.new(trashable_document)
+      result = restored.save
+      restored.errors.each { |attribute, error| errors.add(attribute, error) }
+      result
     end
   end
 end

@@ -5,6 +5,7 @@ class Mongoid::TrashableTest < Minitest::Test
     include Mongoid::Document
     include Mongoid::Trashable
     field :name, type: String
+    validates_uniqueness_of :name
   end
 
   def test_that_it_has_a_version_number
@@ -65,5 +66,16 @@ class Mongoid::TrashableTest < Minitest::Test
 
     restored_foo = FooModel.find(foo.id)
     assert(restored_foo == foo)
+  end
+
+  def test_errors_restoring_a_piece_of_trash
+    FooModel.create!(name: 'Foo').destroy
+    FooModel.create!(name: 'Foo')
+    assert(FooModel.unscoped.count == 1)
+
+    trash = Mongoid::Trash.first
+    refute(trash.restore)
+    assert(trash.errors.size == 1)
+    assert(FooModel.unscoped.count == 1)
   end
 end
