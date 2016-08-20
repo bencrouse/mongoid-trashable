@@ -19,6 +19,21 @@ Or install it yourself as:
     $ gem install mongoid-trashable
 
 ## Usage
+```ruby
+require 'mongoid/trashable'
+
+class MyModel
+  include Mongoid::Document
+  include Mongoid::Trashable
+  field :name
+end
+
+foo = MyModel.create(name: 'Foo')
+foo.delete   # Creates Mongoid::Trash, ignores callbacks
+foo.delete!  # Does not create Mongoid::Trash, ignores callbacks
+foo.destroy  # Creates Mongoid::Trash, fires callbacks
+foo.destroy! # Does not create Mongoid::Trash, fires callbacks
+```
 
 ```ruby
 require 'mongoid/trashable'

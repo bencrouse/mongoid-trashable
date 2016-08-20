@@ -38,4 +38,20 @@ class Mongoid::TrashableTest < Minitest::Test
     assert(trash.trashable_id == foo.id)
     assert(trash.trashable_document == foo.as_document)
   end
+
+  def test_deleting_a_trashable_without_trash
+    foo = FooModel.create!(name: 'Foo')
+    assert(FooModel.unscoped.count == 1)
+
+    foo.delete!
+    assert(FooModel.unscoped.count == 0)
+    assert(Mongoid::Trash.count == 0)
+
+    foo = FooModel.create!(name: 'Foo')
+    assert(FooModel.unscoped.count == 1)
+
+    foo.destroy!
+    assert(FooModel.unscoped.count == 0)
+    assert(Mongoid::Trash.count == 0)
+  end
 end
