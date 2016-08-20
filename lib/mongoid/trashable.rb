@@ -7,13 +7,16 @@ module Mongoid
     extend ActiveSupport::Concern
 
     included do
-      before_destroy :create_trash
+      before_destroy :trash
     end
 
-    private
+    def delete(*)
+      trash # Ensure this is created
+      super
+    end
 
-    def create_trash
-      Trash.create(trashable: self)
+    def trash
+      @trash ||= Trash.create(trashable: self)
     end
   end
 end
